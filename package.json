@@ -1,0 +1,7 @@
+{
+  "name": "anthropic-some",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Anthropic proxy for Vercel Edge",
+  "license": "UNLICENSED"
+}
