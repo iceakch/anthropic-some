@@ -1,6 +1,8 @@
 export const config = { runtime: "edge" };
 
-const UPSTREAM_ORIGIN = "https://api.anthropic.com";
+const ANTHROPIC_ORIGIN = "https://api.anthropic.com";
+const HIGGSFIELD_ORIGIN = "https://platform.higgsfield.ai";
+const HIGGSFIELD_PREFIX = "higgsfield/";
 
 const ALLOWED_HEADERS = new Set([
   "accept",
@@ -37,11 +39,28 @@ function buildUpstreamHeaders(reqHeaders) {
   return out;
 }
 
-function buildUpstreamUrl(reqUrl) {
+export function resolveUpstream(rawPath) {
+  const path = String(rawPath || "").replace(/^\/+/, "");
+  if (path.startsWith(HIGGSFIELD_PREFIX)) {
+    return {
+      origin: HIGGSFIELD_ORIGIN,
+      path: path.slice(HIGGSFIELD_PREFIX.length),
+      service: "higgsfield",
+    };
+  }
+  return {
+    origin: ANTHROPIC_ORIGIN,
+    path,
+    service: "anthropic",
+  };
+}
+
+export function buildUpstreamUrl(reqUrl) {
   const input = new URL(reqUrl);
   const rawPath = String(input.searchParams.get("path") || "").replace(/^\/+/, "");
   input.searchParams.delete("path");
-  const upstream = new URL(`${UPSTREAM_ORIGIN}/${rawPath}`);
+  const { origin, path } = resolveUpstream(rawPath);
+  const upstream = new URL(`${origin}/${path}`);
   for (const [key, value] of input.searchParams.entries()) {
     upstream.searchParams.append(key, value);
   }
