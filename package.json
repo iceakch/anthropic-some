@@ -2,6 +2,10 @@
   "name": "anthropic-some",
   "private": true,
   "version": "1.0.0",
-  "description": "Anthropic proxy for Vercel Edge",
-  "license": "UNLICENSED"
+  "type": "module",
+  "description": "Anthropic + Higgsfield proxy for Vercel Edge",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node --test api/proxy.test.mjs"
+  }
 }
